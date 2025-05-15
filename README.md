@@ -18,7 +18,7 @@ Node.js Challenge: Product Management System
 # Installation
 1. Install dependencies:
 npm install
-# or
+or
 yarn install
 
 2. Configure environment variables:
