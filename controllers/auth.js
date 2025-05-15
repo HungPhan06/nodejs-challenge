@@ -20,7 +20,14 @@ exports.login = async (req, res) => {
             expired_at: new Date(Date.now() + 120 * 60 * 1000) // 120 minutes
         });
 
-        return REST.success(res, { token }, 'Login success');
+        return REST.success(res, {
+            user: {
+                id: user.id,
+                name: user.name,
+                username: user.username,
+            },
+            token: token,
+        }, 'Login success');
     } catch (err) {
         return REST.error(res, err.message, 500);
     }

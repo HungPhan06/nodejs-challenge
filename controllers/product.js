@@ -125,7 +125,7 @@ const fetchProducts = async ({ query = '', page = 1, limit = 10 }) => {
                 "price",
                 "createdAt",
                 [
-                    models.sequelize.literal("(SELECT COUNT(favorites.id) FROM favorites WHERE favorites.product_id = Product.id)"),
+                    models.sequelize.literal("(SELECT COUNT(favorites.id) FROM favorites WHERE favorites.product_id = Product.id AND favorites.deletedAt IS NULL)"),
                     'favorite_count'
                 ]
             ],
