@@ -1,9 +1,9 @@
-#### Introduction
+# Introduction
 Node.js Challenge: Product Management System
 
 # ----------------------------------------------- #
 
-#### Setup & Installation
+# Setup & Installation
 # Prerequisites
  - Node.js >= 18.x
 
@@ -41,7 +41,7 @@ npm start
 
 # ----------------------------------------------- #
 
-#### API Documentation
+# API Documentation
 Detailed API documentation is available here:  
 🔗 https://www.postman.com/orange-station-824268/node-js-challenge/overview
 
@@ -110,7 +110,7 @@ Detailed API documentation is available here:
 
 # ----------------------------------------------- #
 
-#### Features & Implementation Details
+# Features & Implementation Details
 # 1. Authentication
 Use JWT for authentication.
 The token has a default validity of 120 minutes.
