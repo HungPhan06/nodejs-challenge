@@ -76,7 +76,6 @@ exports.createProduct = async (req, res) => {
 
 exports.likeProduct = async (req, res) => {
     try {
-        console.log(req.user)
         const userId = req.user.id;
         const productId = req.params.id;
 
