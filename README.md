@@ -1,6 +1,8 @@
 # Introduction
 Node.js Challenge: Product Management System
 
+Demo endpoint: 🔗 https://nodejs-challenge-production.up.railway.app/
+
 # ----------------------------------------------- #
 
 # Setup & Installation
@@ -29,6 +31,14 @@ Create a .env file with the necessary variables, for example:
 - DB_PASS=yourpassword
 - DB_NAME=yourdatabse
 - JWT_SECRET=your_jwt_secret
+
+Example (Variable configured on [railway]):
+ - DB_HOST="ballast.proxy.rlwy.net"
+ - DB_PORT="25643"
+ - DB_NAME="railway"
+ - DB_USER=root
+ - DB_PASS=fikBCatLLoZYsrLBKpOfouyIKBUZSwdV
+ - JWT_SECRET="bbrc"
 
 3. Run migration to create tables:
 npx sequelize-cli db:migrate
