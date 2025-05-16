@@ -2,6 +2,7 @@
 Node.js Challenge: Product Management System
 
 Demo endpoint: 🔗 https://nodejs-challenge-production.up.railway.app/
+Note: This version is deployed with the free plan so performance and response speed may be affected.
 
 # ----------------------------------------------- #
 
