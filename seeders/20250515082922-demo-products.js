@@ -33,6 +33,78 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       },
+      {
+        name: 'Samsung Galaxy S22',
+        price: 899.99,
+        category_id: electronics.id,
+        subcategory_id: phones.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Dell XPS 13',
+        price: 1499.99,
+        category_id: electronics.id,
+        subcategory_id: laptops.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'iPhone 13',
+        price: 399.99,
+        category_id: electronics.id,
+        subcategory_id: phones.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Apple Watch Series 8',
+        price: 499.99,
+        category_id: electronics.id,
+        subcategory_id: phones.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'iPad Air',
+        price: 599.99,
+        category_id: electronics.id,
+        subcategory_id: phones.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Google Pixel 7',
+        price: 799.99,
+        category_id: electronics.id,
+        subcategory_id: phones.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Lenovo ThinkPad X1 Carbon',
+        price: 1599.99,
+        category_id: electronics.id,
+        subcategory_id: laptops.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Samsung Galaxy Tab S8',
+        price: 749.99,
+        category_id: electronics.id,
+        subcategory_id: phones.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'iPhone 15',
+        price: 919.99,
+        category_id: electronics.id,
+        subcategory_id: phones.id,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
     ]);
   },
 

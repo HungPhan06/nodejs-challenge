@@ -16,6 +16,9 @@ exports.getAllProducts = async (req, res) => {
             data = result.data;
             cacheService.set(cacheKey, data)
         }
+        if (req.user?.id) {
+            data.rows = await attachUserLikeStatus(data.rows, req.user.id)
+        }
         return REST.success(res, data, 'Get products success.');
     } catch (error) {
         return REST.error(res, error.message, 500);
@@ -26,6 +29,9 @@ exports.searchProducts = async (req, res) => {
     try {
         const result = await fetchProducts(req.query);
         if (result.success) {
+            if (req.user?.id) {
+                result.data.rows = await attachUserLikeStatus(result.data.rows, req.user.id)
+            }
             return REST.success(res, result.data, 'Get products success.');
         }
         return REST.error(res, result.error.message, 500);
@@ -91,7 +97,7 @@ exports.likeProduct = async (req, res) => {
         } else {
             await models.Favorite.create({ user_id: userId, product_id: productId });
         }
-
+        cacheService.del(`user_like:user_id=${userId}`)
         cacheService.deleteCacheByPrefix("products:");
         return REST.success(res, null, message + " Success");
     } catch (error) {
@@ -104,7 +110,6 @@ const fetchProducts = async (reqQuery) => {
         const search = reqQuery.q || '';
         const page = +reqQuery.page || 1;
         const limit = +reqQuery.limit || 10;
-        const userId = reqQuery.user_id ?? null;
 
         const offset = (page - 1) * limit;
         const where = {};
@@ -114,26 +119,19 @@ const fetchProducts = async (reqQuery) => {
                 [Op.like]: `%${search}%`
             };
         }
-        const attributes = [
-            "id",
-            "name",
-            "price",
-            "createdAt",
-            [
-                models.sequelize.literal("(SELECT COUNT(favorites.id) FROM favorites WHERE favorites.product_id = Product.id AND favorites.deletedAt IS NULL)"),
-                'favorite_count'
-            ]
-        ];
-        if (userId) {
-            attributes.push([
-                models.sequelize.literal("(SELECT COUNT(favorites.id) FROM favorites WHERE favorites.product_id = Product.id AND favorites.deletedAt IS NULL)"),
-                'liked'
-            ])
-        }
 
         const products = await models.Product.findAndCountAll({
             where,
-            attributes: attributes,
+            attributes: [
+                "id",
+                "name",
+                "price",
+                "createdAt",
+                [
+                    models.sequelize.literal("(SELECT COUNT(favorites.id) FROM favorites WHERE favorites.product_id = Product.id AND favorites.deletedAt IS NULL)"),
+                    'favorite_count'
+                ]
+            ],
             include: [
                 {
                     model: models.Category,
@@ -167,3 +165,24 @@ const fetchProducts = async (reqQuery) => {
         }
     }
 };
+
+async function attachUserLikeStatus(dataRows, userId) {
+    try {
+        const cacheUserLikeKey = `user_like:user_id=${userId}`;
+        let likedProductIds = cacheService.get(cacheUserLikeKey);
+        if (!likedProductIds) {
+            likedProductIds = new Set(
+                (await models.Favorite.findAll({
+                    where: { user_id: userId },
+                    attributes: ['product_id'],
+                    raw: true,
+                })).map(f => f.product_id)
+            );
+        }
+        dataRows = dataRows.map(p => ({
+            ...p,
+            liked_by_me: likedProductIds.has(p.id),
+        }));
+    } catch (error) { }
+    return dataRows;
+}
