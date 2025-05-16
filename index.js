@@ -10,14 +10,8 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.group('/api', (router) => {
-  router.group('/v1', (v1) => {
-    v1.use('/auth', require('./routes/auth'));
-    v1.use('/products', require('./routes/product'));
-    v1.use('/categories', require('./routes/category'));
-    v1.use('/subcategories', require('./routes/subcategory'));
-  });
-});
+// Routes
+require('./routes')(app); 
 
 const PORT = 8089;
 sequelize.sync().then(() => {

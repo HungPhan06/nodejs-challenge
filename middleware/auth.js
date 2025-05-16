@@ -22,6 +22,9 @@ module.exports = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return REST.error(res, 'Token has expired. Please log in again.', 401);
+    }
     return REST.error(res, 'Unauthorized', 401);
   }
 };

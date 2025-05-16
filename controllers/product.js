@@ -6,13 +6,10 @@ const REST = require("../utils/REST");
 
 exports.getAllProducts = async (req, res) => {
     try {
-        const page = +req.query.page || 1;
-        const limit = +req.query.limit || 10;
-
-        const cacheKey = `products:page=${page}&limit=${limit}`;
+        const cacheKey = `products:page=${req.query.page || 1}&limit=${req.query.limit || 10}`;
         let data = cacheService.get(cacheKey);
         if (!data) {
-            const result = await fetchProducts({ page, limit });
+            const result = await fetchProducts(req.query);
             if (!result.success) {
                 return REST.error(res, result.error.message, 500);
             }
@@ -27,11 +24,7 @@ exports.getAllProducts = async (req, res) => {
 
 exports.searchProducts = async (req, res) => {
     try {
-        const q = req.query.q || '';
-        const page = +req.query.page || 1;
-        const limit = +req.query.limit || 10;
-
-        const result = await fetchProducts({ query: q, page, limit });
+        const result = await fetchProducts(req.query);
         if (result.success) {
             return REST.success(res, result.data, 'Get products success.');
         }
@@ -83,6 +76,7 @@ exports.createProduct = async (req, res) => {
 
 exports.likeProduct = async (req, res) => {
     try {
+        console.log(req.user)
         const userId = req.user.id;
         const productId = req.params.id;
 
@@ -106,29 +100,41 @@ exports.likeProduct = async (req, res) => {
     }
 };
 
-const fetchProducts = async ({ query = '', page = 1, limit = 10 }) => {
+const fetchProducts = async (reqQuery) => {
     try {
+        const search = reqQuery.q || '';
+        const page = +reqQuery.page || 1;
+        const limit = +reqQuery.limit || 10;
+        const userId = reqQuery.user_id ?? null;
+
         const offset = (page - 1) * limit;
         const where = {};
 
-        if (query) {
+        if (search) {
             where.name = {
-                [Op.like]: `%${query}%`
+                [Op.like]: `%${search}%`
             };
+        }
+        const attributes = [
+            "id",
+            "name",
+            "price",
+            "createdAt",
+            [
+                models.sequelize.literal("(SELECT COUNT(favorites.id) FROM favorites WHERE favorites.product_id = Product.id AND favorites.deletedAt IS NULL)"),
+                'favorite_count'
+            ]
+        ];
+        if (userId) {
+            attributes.push([
+                models.sequelize.literal("(SELECT COUNT(favorites.id) FROM favorites WHERE favorites.product_id = Product.id AND favorites.deletedAt IS NULL)"),
+                'liked'
+            ])
         }
 
         const products = await models.Product.findAndCountAll({
             where,
-            attributes: [
-                "id",
-                "name",
-                "price",
-                "createdAt",
-                [
-                    models.sequelize.literal("(SELECT COUNT(favorites.id) FROM favorites WHERE favorites.product_id = Product.id AND favorites.deletedAt IS NULL)"),
-                    'favorite_count'
-                ]
-            ],
+            attributes: attributes,
             include: [
                 {
                     model: models.Category,
